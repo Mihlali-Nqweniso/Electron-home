@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Electron - Your New AI Command Center</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@700;800&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+          /* B&W (Dark Only) Palette */
+          --bg: #000000;
+          --text: #ffffff;
+          --text-muted: #aaaaaa;
+          --border: #222222;
+          --btn-primary-bg: #ffffff;
+          --btn-primary-text: #000000;
+          --card-bg: #111111; /* Background for modal */
+        }
+
+        body {
+          font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+          background: var(--bg);
+          color: var(--text);
+          margin: 0;
+          padding: 24px;
+          -webkit-font-smoothing: antialiased;
+          -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* --- 1. Header/Navigation --- */
+        
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 0 16px;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 0;
+        }
+        
+        .header-nav {
+            display: flex;
+            align-items: center;
+            gap: 16px; /* Gap between "About" and "Download" */
+        }
+
+        .logo {
+            font-family: 'Manrope', sans-serif;
+            font-size: 22px;
+            font-weight: 800;
+            text-decoration: none;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .logo-img {
+          width: 24px;
+          height: 24px;
+          border-radius: 6px;
+          filter: brightness(0) invert(1);
+        }
+
+        /* --- 2. Main Hero Section --- */
+
+        .hero {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            min-height: 80vh;
+            padding: 60px 0;
+        }
+
+        .hero-icon {
+          width: 72px;
+          height: 72px;
+          margin-bottom: 24px;
+          border-radius: 14px;
+          filter: brightness(0) invert(1);
+        }
+
+        h1 {
+            font-family: 'Manrope', sans-serif;
+            font-size: 56px;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            line-height: 1.1;
+            margin: 0 0 16px;
+            max-width: 600px;
+        }
+
+        .subhead {
+            font-size: 20px;
+            color: var(--text-muted);
+            margin: 0 0 32px;
+            max-width: 500px;
+            line-height: 1.6;
+        }
+        
+        /* --- 3. Buttons (CTA) --- */
+
+        .btn {
+            display: inline-block;
+            font-family: 'Inter', sans-serif;
+            font-size: 16px;
+            font-weight: 500;
+            text-decoration: none;
+            border-radius: 14px; /* Cute, rounded corners */
+            padding: 16px 32px;
+            border: 1px solid transparent;
+            cursor: pointer;
+            transition: transform 0.1s ease, background 0.2s ease, opacity 0.2s ease;
+        }
+
+        .btn-primary:hover {
+            opacity: 0.85;
+        }
+        
+        .btn-secondary:hover {
+            background: var(--border);
+        }
+        
+        .btn:active {
+            transform: scale(0.97);
+        }
+
+        .btn-primary {
+            background: var(--btn-primary-bg);
+            color: var(--btn-primary-text);
+            border-color: var(--btn-primary-bg);
+        }
+        
+        .btn-secondary {
+            background: transparent;
+            color: var(--text-muted);
+            border-color: var(--border);
+        }
+        
+        /* New "About" link style */
+        .nav-link {
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--text-muted);
+            text-decoration: none;
+            cursor: pointer;
+            transition: color 0.2s ease;
+        }
+        .nav-link:hover {
+            color: var(--text);
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+        
+        .meta-text {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        /* --- 4. App Preview --- */
+
+        .app-preview {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 18px; /* Matches your app's UI */
+            padding: 16px;
+            margin-top: 60px;
+            width: 100%;
+            max-width: 420px;
+        }
+
+        .preview-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding-bottom: 12px;
+            margin-bottom: 12px;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .preview-logo-img {
+          width: 18px;
+          height: 18px;
+          border-radius: 4px; /* Small radius */
+          filter: brightness(0) invert(1);
+        }
+        
+        .preview-title {
+            font-family: 'Manrope', sans-serif;
+            font-weight: 700;
+        }
+
+        .preview-command {
+            font-family: monospace;
+            font-size: 14px;
+            color: var(--text-muted);
+            text-align: left;
+        }
+        
+        /* --- 5. NEW: About Modal --- */
+
+        .modal-overlay {
+            position: fixed;
+            inset: 0; /* (top: 0, left: 0, right: 0, bottom: 0) */
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+            z-index: 1000;
+        }
+
+        /* "visible" class will be toggled by JavaScript */
+        .modal-overlay.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            padding: 24px;
+            width: 100%;
+            max-width: 400px;
+            margin: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            /* Animation */
+            transform: scale(0.95);
+            transition: transform 0.3s ease;
+        }
+        
+        .modal-overlay.visible .modal-content {
+            transform: scale(1);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        
+        .modal-header h2 {
+            font-family: 'Manrope', sans-serif;
+            margin: 0;
+            font-size: 20px;
+        }
+        
+        .modal-content p {
+            margin: 0 0 24px;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+        
+        .close-button {
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--text-muted);
+            background: var(--border);
+            border: 0;
+            border-radius: 10px;
+            padding: 8px 16px;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+        
+        .close-button:hover {
+            background: #333;
+        }
+
+        /* --- Responsive --- */
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 40px;
+            }
+            .subhead {
+                font-size: 18px;
+            }
+            .cta-buttons {
+                flex-direction: column;
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <a href="#" class="logo">
+                <img src="https://i.postimg.cc/J417fJQH/icon48.png" alt="Electron Logo" class="logo-img">
+                Electron
+            </a>
+            
+            <div class="header-nav">
+                <a id="about-btn" class="nav-link">About</a>
+                <a href="Electron-Mac.zip" class="btn btn-secondary" download>Download</a>
+            </div>
+        </header>
+
+        <main class="hero">
+            <img src="https://i.postimg.cc/J417fJQH/icon48.png" alt="Electron Logo" class="hero-icon">
+            <h1>Your new AI command center.</h1>
+            <p class="subhead">
+                Just type what you want to do. Electron handles the rest, from
+                staring repos to managing your entire workflow.
+            </p>
+            
+            <div class="cta-buttons" id="download">
+                <a href="Electron-Mac.zip" class="btn btn-primary" download>
+                    Download for Mac
+                </a>
+            </div>
+            
+            <p class="meta-text">Free to download. Also on Windows & Linux.</p>
+
+            <div class="app-preview">
+                <div class="preview-header">
+                    <img src="https://i.postimg.cc/J417fJQH/icon48.png" alt="Electron Logo" class="preview-logo-img">
+                    <span class="preview-title">Electron</span>
+                </div>
+                <div class="preview-command">
+                    &gt; Open GitHub and star the Electron repo
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <div id="about-modal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>About Electron</h2>
+                <button id="close-btn" class="close-button">Close</button>
+            </div>
+            <p>
+                Electron is a lightweight AI command center. It gives you the power
+                to control your desktop, automate tasks, and interact with services
+                using simple, natural language commands.
+            </p>
+            <p class="meta-text">Version 1.0.0</p>
+        </div>
+    </div>
+
+    <script>
+        // Get all the elements we need
+        const aboutBtn = document.getElementById('about-btn');
+        const closeModalBtn = document.getElementById('close-btn');
+        const modal = document.getElementById('about-modal');
+
+        // When the "About" button is clicked, add the "visible" class to the modal
+        aboutBtn.addEventListener('click', function() {
+            modal.classList.add('visible');
+        });
+
+        // When the "Close" button is clicked, remove the "visible" class
+        closeModalBtn.addEventListener('click', function() {
+            modal.classList.remove('visible');
+        });
+        
+        // Also close the modal if the user clicks on the dark background
+        modal.addEventListener('click', function(event) {
+            // Check if the click was on the overlay itself, not the content card
+            if (event.target === modal) {
+                modal.classList.remove('visible');
+            }
+        });
+    </script>
+
+</body>
+</html>
